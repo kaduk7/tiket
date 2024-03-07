@@ -1,21 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
-import { useState, SyntheticEvent, useRef, useEffect } from "react"
+import { useState, SyntheticEvent, useEffect } from "react"
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal';
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"
+import { MobilTb } from "@prisma/client";
 import { useRouter } from "next/navigation"
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Add({ reload }: { reload: Function }) {
-    const [nama, setNama] = useState("")
-    const [hp, setHp] = useState("")
-    const [wa, setWa] = useState("")
-    const [password, setPassword] = useState("")
+function Update({ mobil, reload }: { mobil: MobilTb, reload: Function }) {
+    const [nama, setNama] = useState(mobil.nama)
+    const [plat, setPlat] = useState(mobil.plat)
+    const [merek, setMerek] = useState(mobil.merek)
+    const [jumlahBangku, setJumlahBangku] = useState(String(mobil.jumlahBangku))
     const [file, setFile] = useState<File | null>()
+    const [foto, setFoto] = useState(mobil.foto)
     const [show, setShow] = useState(false);
-    const [st, setSt] = useState(false);
     const router = useRouter()
-    const ref = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(false)
     if (isLoading) {
         Swal.fire({
@@ -28,83 +29,84 @@ function Add({ reload }: { reload: Function }) {
         })
     }
 
+    useEffect(() => {
+        if (!file) {
+            return
+        }
+        const objectUrl = URL.createObjectURL(file)
+        setFoto(objectUrl)
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [file])
+
     const handleClose = () => {
         setShow(false);
-        clearForm();
+        refreshform()
     }
 
     const handleShow = () => setShow(true);
 
-    useEffect(() => {
-        ref.current?.focus();
-    }, [])
-
-    function clearForm() {
-        setNama('')
-        setHp('')
-        setWa('')
-        setPassword('')
-        setFile(null)
+    const refreshform = () => {
+        setNama(mobil.nama)
+        setPlat(mobil.plat)
+        setMerek(mobil.merek)
+        setJumlahBangku(String(mobil.jumlahBangku))
+        setFoto(mobil.foto)
     }
 
-    const handleSubmit = async (e: SyntheticEvent) => {
+    const handleUpdate = async (e: SyntheticEvent) => {
         setIsLoading(true)
         e.preventDefault()
+        const newfoto = foto === mobil.foto ? 'no' : 'yes'
         try {
             const formData = new FormData()
             formData.append('nama', nama)
-            formData.append('hp', hp)
-            formData.append('wa', wa)
-            formData.append('password', password)
+            formData.append('plat', plat)
+            formData.append('merek', merek)
+            formData.append('jumlahBangku',jumlahBangku)
             formData.append('file', file as File)
+            formData.append('newfoto', newfoto)
             const image = formData.get('file') as File;
             const namaunik = Date.now() + '-' + image.name
             formData.append('namaunik', namaunik)
 
-            const xxx = await axios.post(`/api/superadmin`, formData, {
+            const xxx = await axios.patch(`/admin/api/mobil/${mobil.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             })
             setTimeout(async function () {
-                if (xxx.data.pesan == 'Nohp sudah ada') {
+                if (xxx.data.pesan == 'sudah ada plat') {
                     setIsLoading(false)
                     Swal.fire({
                         position: 'top-end',
                         icon: 'warning',
-                        title: 'No Hp sudah terdaftar',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-                if (xxx.data.pesan == 'Nowa sudah ada') {
-                    setIsLoading(false)
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'warning',
-                        title: 'No WA sudah terdaftar',
+                        title: 'No polisi ini sudah terdaftar',
                         showConfirmButton: false,
                         timer: 1500
                     })
                 }
                 if (xxx.data.pesan == 'berhasil') {
-                    if (file) {
+                    if (newfoto === 'yes') {
                         await supabase.storage
                             .from(supabaseBUCKET)
-                            .upload(`foto-user/${namaunik}`, image);
+                            .remove([`foto-mobil/${mobil.foto}`]);
+                        
+                        await supabase.storage
+                            .from(supabaseBUCKET)
+                            .upload(`foto-mobil/${namaunik}`, image);
+                        setFoto(namaunik)
                     }
-                    handleClose();
+                    setShow(false);
                     setIsLoading(false)
+                    reload()
+                    router.refresh()
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Berhasil Simpan',
+                        title: 'Berhasil diubah',
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    clearForm();
-                    reload()
-                    router.refresh()
                 }
             }, 1500);
         } catch (error) {
@@ -114,20 +116,19 @@ function Add({ reload }: { reload: Function }) {
 
     return (
         <div>
-            <button onClick={handleShow} type="button" className="btn btn-success btn-icon-text">
-                Tambah User</button>
+            <span onClick={handleShow} className="btn btn-success shadow btn-xs sharp mx-1"><i className="fa fa-edit"></i></span>
             <Modal
                 dialogClassName="modal-m"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleUpdate}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Tambah Data User</Modal.Title>
+                        <Modal.Title>Edit Data User</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row">
+                    <div className="row">
                             <div className="mb-3 col-md-12">
                                 <label className="form-label" >Nama</label>
                                 <input
@@ -141,46 +142,35 @@ function Add({ reload }: { reload: Function }) {
                         </div>
                         <div className="row">
                             <div className="mb-3 col-md-12">
-                                <label className="form-label" >No Hp</label>
+                                <label className="form-label" >No Polisi</label>
                                 <input
                                     required
-                                    type="number"
+                                    type="text"
                                     className="form-control"
-                                    value={hp} onChange={(e) => setHp(e.target.value)}
+                                    value={plat} onChange={(e) => setPlat(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="row">
                             <div className="mb-3 col-md-12">
-                                <label className="form-label" >No WA</label>
+                                <label className="form-label" >Merek</label>
                                 <input
                                     required
-                                    type="number"
+                                    type="text"
                                     className="form-control"
-                                    value={wa} onChange={(e) => setWa(e.target.value)}
+                                    value={merek} onChange={(e) => setMerek(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="row">
                             <div className="mb-3 col-md-12">
-                                <label className="form-label" >Password</label>
-                                <div className="input-group input-success">
-                                    <input
-                                        required
-                                        type={st ? "text" : "password"}
-                                        className="form-control"
-                                        value={password} onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    {st ?
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye-off" />
-                                        </button>
-                                        :
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye" />
-                                        </button>
-                                    }
-                                </div>
+                                <label className="form-label" >Jumlah Bangku</label>
+                                <input
+                                    required
+                                    type="number"
+                                    className="form-control"
+                                    value={jumlahBangku} onChange={(e) => setJumlahBangku(e.target.value)}
+                                />
                             </div>
                         </div>
                         <div className="row">
@@ -205,4 +195,4 @@ function Add({ reload }: { reload: Function }) {
     )
 }
 
-export default Add
+export default Update

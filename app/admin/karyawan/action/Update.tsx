@@ -1,21 +1,23 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
-import { useState, SyntheticEvent, useRef, useEffect } from "react"
+import { useState, SyntheticEvent, useEffect } from "react"
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal';
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"
+import { UserTb } from "@prisma/client";
 import { useRouter } from "next/navigation"
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Add({ reload }: { reload: Function }) {
-    const [nama, setNama] = useState("")
-    const [hp, setHp] = useState("")
-    const [wa, setWa] = useState("")
-    const [password, setPassword] = useState("")
+function Update({ user, reload }: { user: UserTb, reload: Function }) {
+
+    const [nama, setNama] = useState(user.nama)
+    const [jenis, setJenis] = useState(user.jenis)
+    const [hp, setHp] = useState(user.hp)
+    const [wa, setWa] = useState(user.wa)
     const [file, setFile] = useState<File | null>()
+    const [foto, setFoto] = useState(user.foto)
     const [show, setShow] = useState(false);
-    const [st, setSt] = useState(false);
     const router = useRouter()
-    const ref = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(false)
     if (isLoading) {
         Swal.fire({
@@ -28,83 +30,94 @@ function Add({ reload }: { reload: Function }) {
         })
     }
 
+    useEffect(() => {
+        if (!file) {
+            return
+        }
+        const objectUrl = URL.createObjectURL(file)
+        setFoto(objectUrl)
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [file])
+
     const handleClose = () => {
         setShow(false);
-        clearForm();
+        refreshform()
     }
 
     const handleShow = () => setShow(true);
 
-    useEffect(() => {
-        ref.current?.focus();
-    }, [])
-
-    function clearForm() {
-        setNama('')
-        setHp('')
-        setWa('')
-        setPassword('')
-        setFile(null)
+    const refreshform = () => {
+        setNama(user.nama)
+        setJenis(user.jenis)
+        setHp(user.hp)
+        setWa(user.wa)
+        setFoto(user.foto)
     }
 
-    const handleSubmit = async (e: SyntheticEvent) => {
+    const handleUpdate = async (e: SyntheticEvent) => {
         setIsLoading(true)
         e.preventDefault()
+        const newfoto = foto === user.foto ? 'no' : 'yes'
         try {
             const formData = new FormData()
             formData.append('nama', nama)
+            formData.append('jenis', jenis)
             formData.append('hp', hp)
             formData.append('wa', wa)
-            formData.append('password', password)
             formData.append('file', file as File)
+            formData.append('newfoto', newfoto)
             const image = formData.get('file') as File;
             const namaunik = Date.now() + '-' + image.name
             formData.append('namaunik', namaunik)
 
-            const xxx = await axios.post(`/api/superadmin`, formData, {
+            const xxx = await axios.patch(`/admin/api/karyawan/${user.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             })
             setTimeout(async function () {
-                if (xxx.data.pesan == 'Nohp sudah ada') {
+                if (xxx.data.pesan == 'sudah ada hp') {
                     setIsLoading(false)
                     Swal.fire({
                         position: 'top-end',
                         icon: 'warning',
-                        title: 'No Hp sudah terdaftar',
+                        title: 'No hp ini sudah terdaftar',
                         showConfirmButton: false,
                         timer: 1500
                     })
                 }
-                if (xxx.data.pesan == 'Nowa sudah ada') {
+                if (xxx.data.pesan == 'sudah ada wa') {
                     setIsLoading(false)
                     Swal.fire({
                         position: 'top-end',
                         icon: 'warning',
-                        title: 'No WA sudah terdaftar',
+                        title: 'No WA ini sudah terdaftar',
                         showConfirmButton: false,
                         timer: 1500
                     })
                 }
                 if (xxx.data.pesan == 'berhasil') {
-                    if (file) {
+                    if (newfoto === 'yes') {
+                        await supabase.storage
+                            .from(supabaseBUCKET)
+                            .remove([`foto-user/${user.foto}`]);
+                        
                         await supabase.storage
                             .from(supabaseBUCKET)
                             .upload(`foto-user/${namaunik}`, image);
+                        setFoto(namaunik)
                     }
-                    handleClose();
+                    setShow(false);
                     setIsLoading(false)
+                    reload()
+                    router.refresh()
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Berhasil Simpan',
+                        title: 'Berhasil diubah',
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    clearForm();
-                    reload()
-                    router.refresh()
                 }
             }, 1500);
         } catch (error) {
@@ -114,21 +127,20 @@ function Add({ reload }: { reload: Function }) {
 
     return (
         <div>
-            <button onClick={handleShow} type="button" className="btn btn-success btn-icon-text">
-                Tambah User</button>
+            <span onClick={handleShow} className="btn btn-success shadow btn-xs sharp mx-1"><i className="fa fa-edit"></i></span>
             <Modal
-                dialogClassName="modal-m"
+                dialogClassName="modal-lg"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleUpdate}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Tambah Data User</Modal.Title>
+                        <Modal.Title>Edit Data Karyawan</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row">
-                            <div className="mb-3 col-md-12">
+                    <div className="row">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >Nama</label>
                                 <input
                                     required
@@ -138,9 +150,21 @@ function Add({ reload }: { reload: Function }) {
                                     value={nama} onChange={(e) => setNama(e.target.value)}
                                 />
                             </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Jenis</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={jenis} onChange={(e) => setJenis(e.target.value)}>
+                                    <option value={''}>Pilih Jenis</option>
+                                    <option value={'Kasir'}>Kasir</option>
+                                    <option value={'Supir'}>Supir</option>
+
+                                </select>
+                            </div>
                         </div>
                         <div className="row">
-                            <div className="mb-3 col-md-12">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >No Hp</label>
                                 <input
                                     required
@@ -149,9 +173,7 @@ function Add({ reload }: { reload: Function }) {
                                     value={hp} onChange={(e) => setHp(e.target.value)}
                                 />
                             </div>
-                        </div>
-                        <div className="row">
-                            <div className="mb-3 col-md-12">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >No WA</label>
                                 <input
                                     required
@@ -159,28 +181,6 @@ function Add({ reload }: { reload: Function }) {
                                     className="form-control"
                                     value={wa} onChange={(e) => setWa(e.target.value)}
                                 />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="mb-3 col-md-12">
-                                <label className="form-label" >Password</label>
-                                <div className="input-group input-success">
-                                    <input
-                                        required
-                                        type={st ? "text" : "password"}
-                                        className="form-control"
-                                        value={password} onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    {st ?
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye-off" />
-                                        </button>
-                                        :
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye" />
-                                        </button>
-                                    }
-                                </div>
                             </div>
                         </div>
                         <div className="row">
@@ -205,4 +205,4 @@ function Add({ reload }: { reload: Function }) {
     )
 }
 
-export default Add
+export default Update

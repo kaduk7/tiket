@@ -43,13 +43,13 @@ export default function MenuAdmin() {
                         <ul aria-expanded="false" id="master">
                             <li className="mini-dashboard">Master Data</li>
                             <li>
-                                <Link href="/admin/zona">Data Zona</Link>
+                                <Link href="/admin/karyawan">Data Karyawan</Link>
                             </li>
                             <li>
-                                <Link href="/admin/rute">Data Rute</Link>
+                                <Link href="/admin/mobil">Data Mobil</Link>
                             </li>
                             <li>
-                                <Link href="/admin/tps">Data Tps</Link>
+                                <Link href="/admin/sesi">Data Sesi</Link>
                             </li>
                         </ul>
                     </li>
@@ -69,12 +69,9 @@ export default function MenuAdmin() {
                             <span className="nav-text">Setup</span>
                         </a>
                         <ul aria-expanded="false" id="master">
-                            <li className="mini-dashboard">Tugas</li>
+                            <li className="mini-dashboard">Setup</li>
                             <li>
-                                <Link href="/admin/user">Tambah User</Link>
-                            </li>
-                            <li>
-                                <Link href="/admin/ruteuser">Rute User</Link>
+                                <Link href="/admin/jadwal">Jadwal Berangkat</Link>
                             </li>
                         </ul>
                     </li>
@@ -89,10 +86,10 @@ export default function MenuAdmin() {
                                     <path fillRule="evenodd" clipRule="evenodd" d="M20.2907 16.5533C20.2907 15.2576 19.2334 14.207 17.9284 14.207C16.6226 14.207 15.5645 15.2576 15.5645 16.5533C15.5645 17.8489 16.6226 18.8995 17.9284 18.8995C19.2334 18.8995 20.2907 17.8489 20.2907 16.5533Z" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </div>
-                            <span className="nav-text">Informasi</span>
+                            <span className="nav-text">Laporan</span>
                         </a>
                         <ul aria-expanded="false" id="master">
-                            <li className="mini-dashboard">Informasi</li>
+                            <li className="mini-dashboard">Laporan</li>
                             <li>
                                 <Link href="/master/profil">Setting</Link>
                             </li>

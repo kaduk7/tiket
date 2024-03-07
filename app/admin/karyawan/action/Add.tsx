@@ -8,12 +8,11 @@ import { supabase, supabaseBUCKET } from '@/app/helper'
 
 function Add({ reload }: { reload: Function }) {
     const [nama, setNama] = useState("")
+    const [jenis, setJenis] = useState("")
     const [hp, setHp] = useState("")
     const [wa, setWa] = useState("")
-    const [password, setPassword] = useState("")
     const [file, setFile] = useState<File | null>()
     const [show, setShow] = useState(false);
-    const [st, setSt] = useState(false);
     const router = useRouter()
     const ref = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(false)
@@ -41,9 +40,9 @@ function Add({ reload }: { reload: Function }) {
 
     function clearForm() {
         setNama('')
+        setJenis('')
         setHp('')
         setWa('')
-        setPassword('')
         setFile(null)
     }
 
@@ -53,15 +52,15 @@ function Add({ reload }: { reload: Function }) {
         try {
             const formData = new FormData()
             formData.append('nama', nama)
+            formData.append('jenis', jenis)
             formData.append('hp', hp)
             formData.append('wa', wa)
-            formData.append('password', password)
             formData.append('file', file as File)
             const image = formData.get('file') as File;
             const namaunik = Date.now() + '-' + image.name
             formData.append('namaunik', namaunik)
 
-            const xxx = await axios.post(`/api/superadmin`, formData, {
+            const xxx = await axios.post(`/admin/api/karyawan`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -115,20 +114,20 @@ function Add({ reload }: { reload: Function }) {
     return (
         <div>
             <button onClick={handleShow} type="button" className="btn btn-success btn-icon-text">
-                Tambah User</button>
+                Tambah</button>
             <Modal
-                dialogClassName="modal-m"
+                dialogClassName="modal-lg"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}>
                 <form onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Tambah Data User</Modal.Title>
+                        <Modal.Title>Tambah Data Karyawan</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row">
-                            <div className="mb-3 col-md-12">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >Nama</label>
                                 <input
                                     required
@@ -138,9 +137,21 @@ function Add({ reload }: { reload: Function }) {
                                     value={nama} onChange={(e) => setNama(e.target.value)}
                                 />
                             </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Jenis</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={jenis} onChange={(e) => setJenis(e.target.value)}>
+                                    <option value={''}>Pilih Jenis</option>
+                                    <option value={'Kasir'}>Kasir</option>
+                                    <option value={'Supir'}>Supir</option>
+
+                                </select>
+                            </div>
                         </div>
                         <div className="row">
-                            <div className="mb-3 col-md-12">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >No Hp</label>
                                 <input
                                     required
@@ -149,9 +160,7 @@ function Add({ reload }: { reload: Function }) {
                                     value={hp} onChange={(e) => setHp(e.target.value)}
                                 />
                             </div>
-                        </div>
-                        <div className="row">
-                            <div className="mb-3 col-md-12">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >No WA</label>
                                 <input
                                     required
@@ -159,28 +168,6 @@ function Add({ reload }: { reload: Function }) {
                                     className="form-control"
                                     value={wa} onChange={(e) => setWa(e.target.value)}
                                 />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="mb-3 col-md-12">
-                                <label className="form-label" >Password</label>
-                                <div className="input-group input-success">
-                                    <input
-                                        required
-                                        type={st ? "text" : "password"}
-                                        className="form-control"
-                                        value={password} onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    {st ?
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye-off" />
-                                        </button>
-                                        :
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye" />
-                                        </button>
-                                    }
-                                </div>
                             </div>
                         </div>
                         <div className="row">

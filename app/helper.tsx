@@ -2,8 +2,8 @@ import { createClient } from "@supabase/supabase-js"
 
 const currentTime= new Date();
 
-export let supabaseUrl = 'https://kqgopmfqfjqagcsgzrtw.supabase.co'
-export let supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxZ29wbWZxZmpxYWdjc2d6cnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk0NzczMDYsImV4cCI6MjAyNTA1MzMwNn0.zxN-y_T415-LkCot9V3i87uxMK-nbPriSVi8O2jZwBo'
+export let supabaseUrl = 'https://qmpsoqouwjvmrxrwxxpl.supabase.co'
+export let supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcHNvcW91d2p2bXJ4cnd4eHBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk3ODc4ODIsImV4cCI6MjAyNTM2Mzg4Mn0.cZtIqiaIp38qQaySeYK0FVn3KLlyGuwiXvfo7FquBgM'
 export let supabaseBUCKET = 'uploadfile'
 export const supabase = createClient(supabaseUrl, supabaseKey)
 

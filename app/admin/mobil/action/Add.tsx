@@ -8,9 +8,9 @@ import { supabase, supabaseBUCKET } from '@/app/helper'
 
 function Add({ reload }: { reload: Function }) {
     const [nama, setNama] = useState("")
-    const [hp, setHp] = useState("")
-    const [wa, setWa] = useState("")
-    const [password, setPassword] = useState("")
+    const [plat, setPlat] = useState("")
+    const [merek, setMerek] = useState("")
+    const [jumlahBangku, setJumlahBangku] = useState("")
     const [file, setFile] = useState<File | null>()
     const [show, setShow] = useState(false);
     const [st, setSt] = useState(false);
@@ -41,9 +41,9 @@ function Add({ reload }: { reload: Function }) {
 
     function clearForm() {
         setNama('')
-        setHp('')
-        setWa('')
-        setPassword('')
+        setPlat('')
+        setMerek('')
+        setJumlahBangku('')
         setFile(null)
     }
 
@@ -53,36 +53,26 @@ function Add({ reload }: { reload: Function }) {
         try {
             const formData = new FormData()
             formData.append('nama', nama)
-            formData.append('hp', hp)
-            formData.append('wa', wa)
-            formData.append('password', password)
+            formData.append('plat', plat)
+            formData.append('merek', merek)
+            formData.append('jumlahBangku', jumlahBangku)
             formData.append('file', file as File)
             const image = formData.get('file') as File;
             const namaunik = Date.now() + '-' + image.name
             formData.append('namaunik', namaunik)
 
-            const xxx = await axios.post(`/api/superadmin`, formData, {
+            const xxx = await axios.post(`/admin/api/mobil`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             })
             setTimeout(async function () {
-                if (xxx.data.pesan == 'Nohp sudah ada') {
+                if (xxx.data.pesan == 'plat sudah ada') {
                     setIsLoading(false)
                     Swal.fire({
                         position: 'top-end',
                         icon: 'warning',
-                        title: 'No Hp sudah terdaftar',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-                if (xxx.data.pesan == 'Nowa sudah ada') {
-                    setIsLoading(false)
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'warning',
-                        title: 'No WA sudah terdaftar',
+                        title: 'No Polisi sudah terdaftar',
                         showConfirmButton: false,
                         timer: 1500
                     })
@@ -91,7 +81,7 @@ function Add({ reload }: { reload: Function }) {
                     if (file) {
                         await supabase.storage
                             .from(supabaseBUCKET)
-                            .upload(`foto-user/${namaunik}`, image);
+                            .upload(`foto-mobil/${namaunik}`, image);
                     }
                     handleClose();
                     setIsLoading(false)
@@ -115,7 +105,7 @@ function Add({ reload }: { reload: Function }) {
     return (
         <div>
             <button onClick={handleShow} type="button" className="btn btn-success btn-icon-text">
-                Tambah User</button>
+                Tambah</button>
             <Modal
                 dialogClassName="modal-m"
                 show={show}
@@ -124,7 +114,7 @@ function Add({ reload }: { reload: Function }) {
                 keyboard={false}>
                 <form onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Tambah Data User</Modal.Title>
+                        <Modal.Title>Tambah Data Mobil</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row">
@@ -141,46 +131,35 @@ function Add({ reload }: { reload: Function }) {
                         </div>
                         <div className="row">
                             <div className="mb-3 col-md-12">
-                                <label className="form-label" >No Hp</label>
+                                <label className="form-label" >No Polisi</label>
                                 <input
                                     required
-                                    type="number"
+                                    type="text"
                                     className="form-control"
-                                    value={hp} onChange={(e) => setHp(e.target.value)}
+                                    value={plat} onChange={(e) => setPlat(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="row">
                             <div className="mb-3 col-md-12">
-                                <label className="form-label" >No WA</label>
+                                <label className="form-label" >Merek</label>
                                 <input
                                     required
-                                    type="number"
+                                    type="text"
                                     className="form-control"
-                                    value={wa} onChange={(e) => setWa(e.target.value)}
+                                    value={merek} onChange={(e) => setMerek(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="row">
                             <div className="mb-3 col-md-12">
-                                <label className="form-label" >Password</label>
-                                <div className="input-group input-success">
-                                    <input
-                                        required
-                                        type={st ? "text" : "password"}
-                                        className="form-control"
-                                        value={password} onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    {st ?
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye-off" />
-                                        </button>
-                                        :
-                                        <button onClick={() => setSt(!st)} className="input-group-text border-0" type="button">
-                                            <i className="mdi mdi-eye" />
-                                        </button>
-                                    }
-                                </div>
+                                <label className="form-label" >Jumlah Bangku</label>
+                                <input
+                                    required
+                                    type="number"
+                                    className="form-control"
+                                    value={jumlahBangku} onChange={(e) => setJumlahBangku(e.target.value)}
+                                />
                             </div>
                         </div>
                         <div className="row">
