@@ -145,7 +145,7 @@ function Add({ reload }: { reload: Function }) {
                                     value={jenis} onChange={(e) => setJenis(e.target.value)}>
                                     <option value={''}>Pilih Jenis</option>
                                     <option value={'Kasir'}>Kasir</option>
-                                    <option value={'Supir'}>Supir</option>
+                                    <option value={'Sopir'}>Sopir</option>
 
                                 </select>
                             </div>

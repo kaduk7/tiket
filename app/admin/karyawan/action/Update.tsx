@@ -156,9 +156,8 @@ function Update({ user, reload }: { user: UserTb, reload: Function }) {
                                     required
                                     className="form-control"
                                     value={jenis} onChange={(e) => setJenis(e.target.value)}>
-                                    <option value={''}>Pilih Jenis</option>
                                     <option value={'Kasir'}>Kasir</option>
-                                    <option value={'Supir'}>Supir</option>
+                                    <option value={'Sopir'}>Sopir</option>
 
                                 </select>
                             </div>

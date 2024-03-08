@@ -6,9 +6,12 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation"
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Add({ reload }: { reload: Function }) {
-    const [nama, setNama] = useState("")
-    const [jam, setJam] = useState("")
+function Add({ reload, tanggal, datauser, datamobil, datasesi }: { reload: Function, tanggal: String, datauser: Array<any>, datamobil: Array<any>, datasesi: Array<any> }) {
+    const [userId, setUserid] = useState("")
+    const [mobilId, setMobilid] = useState("")
+    const [sesiId, setSesiId] = useState("")
+    const [ongkos, setOngkos] = useState("")
+    const tanggalBerangkat = tanggal
     const [show, setShow] = useState(false);
     const router = useRouter()
     const ref = useRef<HTMLInputElement>(null);
@@ -36,8 +39,10 @@ function Add({ reload }: { reload: Function }) {
     }, [])
 
     function clearForm() {
-        setNama('')
-        setJam('')
+        setUserid('')
+        setMobilid('')
+        setSesiId('')
+        setOngkos('')
     }
 
     const handleSubmit = async (e: SyntheticEvent) => {
@@ -45,10 +50,13 @@ function Add({ reload }: { reload: Function }) {
         e.preventDefault()
         try {
             const formData = new FormData()
-            formData.append('nama', nama)
-            formData.append('jam', jam)
+            formData.append('userId', userId)
+            formData.append('mobilId', mobilId)
+            formData.append('sesiId', sesiId)
+            formData.append('ongkos', ongkos)
+            formData.append('tanggalBerangkat', String(tanggalBerangkat))
 
-            const xxx = await axios.post(`/admin/api/sesi`, formData, {
+            const xxx = await axios.post(`/admin/api/jadwal`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -65,7 +73,7 @@ function Add({ reload }: { reload: Function }) {
                         timer: 1500
                     })
                     clearForm();
-                    reload()
+                    reload(tanggal)
                     router.refresh()
                 }
             }, 1500);
@@ -79,41 +87,64 @@ function Add({ reload }: { reload: Function }) {
             <button onClick={handleShow} type="button" className="btn btn-success btn-icon-text">
                 Tambah</button>
             <Modal
-                dialogClassName="modal-m"
+                dialogClassName="modal-lg"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}>
                 <form onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Tambah Data Mobil</Modal.Title>
+                        <Modal.Title>Tambah Jadwal</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="mb-3 row">
-                            <label className="col-sm-3 col-form-label" >Jadwal</label>
-                            <div className="col-sm-9">
+                        <div className="row">
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Nama Sopir</label>
                                 <select
                                     required
                                     autoFocus
                                     className="form-control"
-                                    value={nama} onChange={(e) => setNama(e.target.value)}>
-                                    <option value={''}> Pilih Jadwal</option>
-                                    <option value={'Pagi'}> Pagi</option>
-                                    <option value={'Siang'}> Siang</option>
-                                    <option value={'Malam'}> Malam</option>
+                                    value={userId} onChange={(e) => setUserid(e.target.value)}>
+                                    <option value={''}> Pilih Sopir</option>
+                                    {datauser?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Pilih Mobil</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={mobilId} onChange={(e) => setMobilid(e.target.value)}>
+                                    <option value={''}> Pilih Mobil</option>
+                                    {datamobil?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.plat}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
-                        <div className="mb-3 row">
-                            <label className="col-sm-3 col-form-label" >Jam</label>
-                            <div className="col-sm-9">
+                        <div className="row">
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Pilih Sesi</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={sesiId} onChange={(e) => setSesiId(e.target.value)}>
+                                    <option value={''}> Pilih Sesi</option>
+                                    {datasesi?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Ongkos</label>
                                 <input
                                     required
-                                    type="time"
-                                    id="timeInput"
+                                    type="number"
                                     className="form-control"
-                                    value={jam} onChange={(e) => setJam(e.target.value)}
-                                />
+                                    value={ongkos} onChange={(e) => setOngkos(e.target.value)}>
+                                </input>
                             </div>
                         </div>
                     </Modal.Body>

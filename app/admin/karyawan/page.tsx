@@ -20,7 +20,8 @@ const Supir = () => {
     try {
       const response = await fetch(`/admin/api/karyawan`);
       const result = await response.json();
-      setDatasupir(result);
+      const sopirData = result[0];
+      setDatasupir(sopirData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }

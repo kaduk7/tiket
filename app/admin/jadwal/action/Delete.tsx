@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Swal from "sweetalert2";
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Delete({ sesiId, reload }: { sesiId: Number, reload: Function }) {
+function Delete({ jadwalId, reload,tanggal }: { jadwalId: Number, reload: Function,tanggal:String }) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -21,12 +21,12 @@ function Delete({ sesiId, reload }: { sesiId: Number, reload: Function }) {
         })
     }
 
-    const handleDelete = async (sesiId: number) => {
+    const handleDelete = async (jadwalId: number) => {
         setIsLoading(true)
         handleClose()
-        await axios.delete(`/admin/api/sesi/${sesiId}`)
+        await axios.delete(`/admin/api/jadwal/${jadwalId}`)
         setTimeout(function () {
-            reload()
+            reload(tanggal)
             setIsLoading(false)
             Swal.fire({
                 position: 'top-end',
@@ -52,7 +52,7 @@ function Delete({ sesiId, reload }: { sesiId: Number, reload: Function }) {
                 </Modal.Body>
                 <Modal.Footer>
                     <button type="button" className="btn btn-warning light" onClick={handleClose}>Close</button>
-                    <button type="button" className="btn btn-danger light" onClick={() => handleDelete(Number(sesiId))}>Ya, Hapus</button>
+                    <button type="button" className="btn btn-danger light" onClick={() => handleDelete(Number(jadwalId))}>Ya, Hapus</button>
                 </Modal.Footer>
             </Modal>
         </div>

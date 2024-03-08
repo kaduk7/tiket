@@ -17,11 +17,13 @@ model MobilTb {
   id           Int      @id @default(autoincrement())
   plat         String   @unique
   nama         String
-  merek        String   
+  merek        String
   jumlahBangku Int
   foto         String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  jadwalTb JadwalTb[]
 }
 
 model SesiTb {
@@ -30,17 +32,23 @@ model SesiTb {
   jam       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  jadwalTb JadwalTb[]
 }
 
 model JadwalTb {
   id               Int      @id @default(autoincrement())
-  supirId          Int
+  userId           Int
   mobilId          Int
   sesiId           Int
   tanggalBerangkat DateTime
   ongkos           Int
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  userTb  UserTb  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mobilTb MobilTb @relation(fields: [mobilId], references: [id], onDelete: Cascade)
+  sesiTb  SesiTb  @relation(fields: [sesiId], references: [id], onDelete: Cascade)
 }
 
 model UserTb {
@@ -53,4 +61,6 @@ model UserTb {
   foto      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  jadwalTb JadwalTb[]
 }

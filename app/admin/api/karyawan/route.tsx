@@ -35,7 +35,7 @@ export const POST = async (request: Request) => {
     return NextResponse.json({ pesan: 'berhasil' })
 }
 
-export const GET = async () => {
+export const GET = async (request: Request) => {
     const user = await prisma.userTb.findMany({
         where:{
             NOT: {
@@ -46,5 +46,13 @@ export const GET = async () => {
             nama: 'asc'
         }
     });
-    return NextResponse.json(user, { status: 200 })
+    const sopir = await prisma.userTb.findMany({
+        where:{
+            jenis:"Sopir"
+        },
+        orderBy: {
+            nama: 'asc'
+        }
+    });
+    return NextResponse.json([user,sopir], { status: 200 })
 }

@@ -4,13 +4,15 @@ import { useState, SyntheticEvent, useEffect } from "react"
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal';
 import Swal from "sweetalert2"
-import { MobilTb, SesiTb } from "@prisma/client";
+import { JadwalTb, MobilTb, SesiTb } from "@prisma/client";
 import { useRouter } from "next/navigation"
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
-    const [nama, setNama] = useState(sesi.nama)
-    const [jam, setJam] = useState(sesi.jam)
+function Update({ jadwal,reload, tanggal, datauser, datamobil, datasesi }: { jadwal:JadwalTb,reload: Function, tanggal: String, datauser: Array<any>, datamobil: Array<any>, datasesi: Array<any> }) {
+    const [userId, setUserid] = useState(String(jadwal.userId))
+    const [mobilId, setMobilid] = useState(String(jadwal.mobilId))
+    const [sesiId, setSesiId] = useState(String(jadwal.sesiId))
+    const [ongkos, setOngkos] = useState(String(jadwal.ongkos))
     const [show, setShow] = useState(false);
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
@@ -33,8 +35,10 @@ function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
     const handleShow = () => setShow(true);
 
     const refreshform = () => {
-        setNama(sesi.nama)
-        setJam(sesi.jam)
+        setUserid(String(jadwal.userId))
+        setMobilid(String(jadwal.mobilId))
+        setSesiId(String(jadwal.sesiId))
+        setOngkos(String(jadwal.ongkos))
     }
 
     const handleUpdate = async (e: SyntheticEvent) => {
@@ -42,10 +46,12 @@ function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
         e.preventDefault()
         try {
             const formData = new FormData()
-            formData.append('nama', nama)
-            formData.append('jam', jam)
+            formData.append('userId', userId)
+            formData.append('mobilId', mobilId)
+            formData.append('sesiId', sesiId)
+            formData.append('ongkos', ongkos)
 
-            const xxx = await axios.patch(`/admin/api/sesi/${sesi.id}`, formData, {
+            const xxx = await axios.patch(`/admin/api/jadwal/${jadwal.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -54,7 +60,7 @@ function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
                 if (xxx.data.pesan == 'berhasil') {
                     setShow(false);
                     setIsLoading(false)
-                    reload()
+                    reload(tanggal)
                     router.refresh()
                     Swal.fire({
                         position: 'top-end',
@@ -74,41 +80,64 @@ function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
         <div>
             <span onClick={handleShow} className="btn btn-success shadow btn-xs sharp mx-1"><i className="fa fa-edit"></i></span>
             <Modal
-                dialogClassName="modal-m"
+                dialogClassName="modal-lg"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}>
                 <form onSubmit={handleUpdate}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Data User</Modal.Title>
+                        <Modal.Title>Edit Jadwal</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="mb-3 row">
-                            <label className="col-sm-3 col-form-label" >Jadwal</label>
-                            <div className="col-sm-9">
+                    <div className="row">
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Nama Sopir</label>
                                 <select
                                     required
                                     autoFocus
                                     className="form-control"
-                                    value={nama} onChange={(e) => setNama(e.target.value)}>
-                                    <option value={''}> Pilih Jadwal</option>
-                                    <option value={'Pagi'}> Pagi</option>
-                                    <option value={'Siang'}> Siang</option>
-                                    <option value={'Malam'}> Malam</option>
+                                    value={userId} onChange={(e) => setUserid(e.target.value)}>
+                                    <option value={''}> Pilih Sopir</option>
+                                    {datauser?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Pilih Mobil</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={mobilId} onChange={(e) => setMobilid(e.target.value)}>
+                                    <option value={''}> Pilih Mobil</option>
+                                    {datamobil?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.plat}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
-                        <div className="mb-3 row">
-                            <label className="col-sm-3 col-form-label" >Jam</label>
-                            <div className="col-sm-9">
+                        <div className="row">
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Pilih Sesi</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={sesiId} onChange={(e) => setSesiId(e.target.value)}>
+                                    <option value={''}> Pilih Sesi</option>
+                                    {datasesi?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Ongkos</label>
                                 <input
                                     required
-                                    type="time"
-                                    id="timeInput"
+                                    type="number"
                                     className="form-control"
-                                    value={jam} onChange={(e) => setJam(e.target.value)}
-                                />
+                                    value={ongkos} onChange={(e) => setOngkos(e.target.value)}>
+                                </input>
                             </div>
                         </div>
                     </Modal.Body>
