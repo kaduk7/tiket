@@ -14,6 +14,7 @@ export const POST = async (request: Request) => {
                 userId: Number(formData.get('userId')),
                 mobilId: Number(formData.get('mobilId')),
                 sesiId: Number(formData.get('sesiId')),
+                ruteId: Number(formData.get('ruteId')),
                 tanggalBerangkat: tanggalBerangkatDate,
                 ongkos: Number(formData.get('ongkos')),
             }
@@ -28,6 +29,7 @@ export const GET = async () => {
             userTb: true,
             mobilTb: true,
             sesiTb: true,
+            ruteTb:true,
         },
         orderBy: {
             id: 'asc'

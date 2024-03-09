@@ -51,6 +51,9 @@ export default function MenuAdmin() {
                             <li>
                                 <Link href="/admin/sesi">Data Sesi</Link>
                             </li>
+                            <li>
+                                <Link href="/admin/rute">Data Rute</Link>
+                            </li>
                         </ul>
                     </li>
 
@@ -58,11 +61,12 @@ export default function MenuAdmin() {
                         <a href="#master" className="has-arrow " aria-expanded="false">
                             <div className="menu-icon">
                                 <svg
-                                    viewBox="0 0 512 512"
-                                    fill="currentColor"
+                                    fill="none"
+                                    viewBox="0 0 16 16"
                                     width={25} height={24}
+
                                 >
-                                    <path d="M447.68 220.78a16.44 16.44 0 00-1-3.1l-48-112A16 16 0 00384 96H128a16 16 0 00-14.71 9.7l-48 112a16.44 16.44 0 00-1 3.1A16.15 16.15 0 0064 224v184a8 8 0 008 8h32a8 8 0 008-8v-24h288v24a8 8 0 008 8h32a8 8 0 008-8V224a16.15 16.15 0 00-.32-3.22zM144 320a32 32 0 1132-32 32 32 0 01-32 32zm224 0a32 32 0 1132-32 32 32 0 01-32 32zM104.26 208l34.29-80h234.9l34.29 80z" />
+                                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 01-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 01.872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 012.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 012.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 01.872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 01-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 01-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 110-5.86 2.929 2.929 0 010 5.858z" />
                                 </svg>
 
                             </div>
@@ -71,19 +75,24 @@ export default function MenuAdmin() {
                         <ul aria-expanded="false" id="master">
                             <li className="mini-dashboard">Setup</li>
                             <li>
+                                <Link href="/master/profil">Setting Akun</Link>
+                            </li>
+                            <li>
                                 <Link href="/admin/jadwal">Jadwal Berangkat</Link>
                             </li>
+
                         </ul>
                     </li>
 
                     <li>
                         <a href="#master" className="has-arrow " aria-expanded="false">
                             <div className="menu-icon">
-                                <svg width={25} height={24} viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10.6209 16.593H4.32019" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M13.4313 6.90066H19.732" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path fillRule="evenodd" clipRule="evenodd" d="M9.01706 6.84625C9.01706 5.5506 7.9589 4.5 6.65392 4.5C5.34893 4.5 4.29077 5.5506 4.29077 6.84625C4.29077 8.14191 5.34893 9.19251 6.65392 9.19251C7.9589 9.19251 9.01706 8.14191 9.01706 6.84625Z" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path fillRule="evenodd" clipRule="evenodd" d="M20.2907 16.5533C20.2907 15.2576 19.2334 14.207 17.9284 14.207C16.6226 14.207 15.5645 15.2576 15.5645 16.5533C15.5645 17.8489 16.6226 18.8995 17.9284 18.8995C19.2334 18.8995 20.2907 17.8489 20.2907 16.5533Z" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    width={25} height={24}
+                                >
+                                    <path d="M20 8l-6-6H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM9 19H7v-9h2v9zm4 0h-2v-6h2v6zm4 0h-2v-3h2v3zM14 9h-1V4l5 5h-4z" />
                                 </svg>
                             </div>
                             <span className="nav-text">Laporan</span>
@@ -91,13 +100,7 @@ export default function MenuAdmin() {
                         <ul aria-expanded="false" id="master">
                             <li className="mini-dashboard">Laporan</li>
                             <li>
-                                <Link href="/master/profil">Setting</Link>
-                            </li>
-                            <li>
-                                <Link href="/admin/pengumuman">Pengumuman</Link>
-                            </li>
-                            <li>
-                                <Link href="/master/berita">Berita</Link>
+                                <Link href="/admin/jadwal">Pemesanan Tiket</Link>
                             </li>
                         </ul>
                     </li>

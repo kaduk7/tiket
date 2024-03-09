@@ -86,7 +86,7 @@ function Add({ reload }: { reload: Function }) {
                 keyboard={false}>
                 <form onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Tambah Data Mobil</Modal.Title>
+                        <Modal.Title>Tambah Data Sesi</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="mb-3 row">

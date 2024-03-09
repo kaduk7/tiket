@@ -6,10 +6,11 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation"
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Add({ reload, tanggal, datauser, datamobil, datasesi }: { reload: Function, tanggal: String, datauser: Array<any>, datamobil: Array<any>, datasesi: Array<any> }) {
+function Add({ reload, tanggal, datauser, datamobil, datasesi, datarute }: { reload: Function, tanggal: String, datauser: Array<any>, datamobil: Array<any>, datasesi: Array<any>, datarute: Array<any> }) {
     const [userId, setUserid] = useState("")
     const [mobilId, setMobilid] = useState("")
     const [sesiId, setSesiId] = useState("")
+    const [ruteId, setRuteId] = useState("")
     const [ongkos, setOngkos] = useState("")
     const tanggalBerangkat = tanggal
     const [show, setShow] = useState(false);
@@ -42,6 +43,7 @@ function Add({ reload, tanggal, datauser, datamobil, datasesi }: { reload: Funct
         setUserid('')
         setMobilid('')
         setSesiId('')
+        setRuteId('')
         setOngkos('')
     }
 
@@ -53,6 +55,7 @@ function Add({ reload, tanggal, datauser, datamobil, datasesi }: { reload: Funct
             formData.append('userId', userId)
             formData.append('mobilId', mobilId)
             formData.append('sesiId', sesiId)
+            formData.append('ruteId', ruteId)
             formData.append('ongkos', ongkos)
             formData.append('tanggalBerangkat', String(tanggalBerangkat))
 
@@ -99,6 +102,33 @@ function Add({ reload, tanggal, datauser, datamobil, datasesi }: { reload: Funct
                     <Modal.Body>
                         <div className="row">
                             <div className="mb-3 col-md-6">
+                                <label className="form-label" >Rute</label>
+                                <select
+                                    required
+                                    autoFocus
+                                    className="form-control"
+                                    value={ruteId} onChange={(e) => setRuteId(e.target.value)}>
+                                    <option value={''}> Pilih Rute</option>
+                                    {datarute?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Pilih Sesi</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={sesiId} onChange={(e) => setSesiId(e.target.value)}>
+                                    <option value={''}> Pilih Sesi</option>
+                                    {datasesi?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="mb-3 col-md-6">
                                 <label className="form-label" >Nama Sopir</label>
                                 <select
                                     required
@@ -125,18 +155,6 @@ function Add({ reload, tanggal, datauser, datamobil, datasesi }: { reload: Funct
                             </div>
                         </div>
                         <div className="row">
-                            <div className="mb-3 col-md-6">
-                                <label className="form-label" >Pilih Sesi</label>
-                                <select
-                                    required
-                                    className="form-control"
-                                    value={sesiId} onChange={(e) => setSesiId(e.target.value)}>
-                                    <option value={''}> Pilih Sesi</option>
-                                    {datasesi?.map((item: any, i) => (
-                                        <option key={i} value={item.id} >{item.nama}</option>
-                                    ))}
-                                </select>
-                            </div>
                             <div className="mb-3 col-md-6">
                                 <label className="form-label" >Ongkos</label>
                                 <input

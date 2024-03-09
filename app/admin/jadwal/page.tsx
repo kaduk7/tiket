@@ -14,6 +14,7 @@ const Jadwal = () => {
   const [datauser, setUser] = useState([])
   const [datamobil, setMobil] = useState([])
   const [datasesi, setSesi] = useState([])
+  const [datarute, setRute] = useState([])
   const [tanggal, setTanggal] = useState(null)
   const [tanggalvalue, setTanggalvalue] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,6 +24,7 @@ const Jadwal = () => {
     daftarsopir()
     daftarmobil()
     daftarsesi()
+    daftarrute()
   }, [])
 
   const reload = async (tanggal: any) => {
@@ -66,6 +68,16 @@ const Jadwal = () => {
     }
   }
 
+  const daftarrute = async () => {
+    try {
+      const response = await fetch(`/admin/api/rute/`)
+      const result = await response.json();
+      setRute(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
   const handleTanggal = async (date: any) => {
     setTanggal(date);
     setTanggalvalue(moment(date).format('YYYY-MM-DD'))
@@ -93,6 +105,11 @@ const Jadwal = () => {
       width: '80px'
     },
     {
+      name: 'Rute',
+      selector: (row: any) => row.ruteTb.nama,
+      sortable: true,
+    },
+    {
       name: 'Jadwal',
       selector: (row: any) => row.sesiTb.nama,
       sortable: true,
@@ -116,7 +133,7 @@ const Jadwal = () => {
       name: 'Action',
       cell: (row: any) => (
         <div className="d-flex">
-          <Update reload={reload} jadwal={row} tanggal={tanggalvalue} datauser={datauser} datamobil={datamobil} datasesi={datasesi}  />
+          <Update reload={reload} jadwal={row} tanggal={tanggalvalue} datauser={datauser} datamobil={datamobil} datasesi={datasesi} datarute={datarute}  />
           <Delete reload={reload} jadwalId={row.id} tanggal={tanggalvalue}  />
         </div>
       ),
@@ -157,7 +174,7 @@ const Jadwal = () => {
                 <>
                   <div className="row mb-3">
                     <div className="col-md-9">
-                      <Add reload={reload} tanggal={tanggalvalue} datauser={datauser} datamobil={datamobil} datasesi={datasesi} />
+                      <Add reload={reload} tanggal={tanggalvalue} datauser={datauser} datamobil={datamobil} datasesi={datasesi} datarute={datarute} />
                     </div>
                   </div>
                   <DataTable

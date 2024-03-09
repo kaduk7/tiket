@@ -6,8 +6,8 @@ import Update from './action/Update';
 import Delete from './action/Delete';
 
 
-const Karyawan = () => {
-  const [datasupir, setDatasupir] = useState([])
+const Rute = () => {
+  const [datarute, setDatarute] = useState([])
   const [filterText, setFilterText] = React.useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -18,10 +18,9 @@ const Karyawan = () => {
 
   const reload = async () => {
     try {
-      const response = await fetch(`/admin/api/karyawan`);
+      const response = await fetch(`/admin/api/rute`);
       const result = await response.json();
-      const sopirData = result[0];
-      setDatasupir(sopirData);
+      setDatarute(result);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -32,7 +31,7 @@ const Karyawan = () => {
     setCurrentPage(page);
   };
 
-  const filteredItems = datasupir.filter(
+  const filteredItems = datarute.filter(
     (item: any) => item.nama && item.nama.toLowerCase().includes(filterText.toLowerCase()),
   );
 
@@ -44,26 +43,16 @@ const Karyawan = () => {
       width: '80px'
     },
     {
-      name: 'Nama',
+      name: 'Rute',
       selector: (row: any) => row.nama,
-      sortable: true,
-    },
-    {
-      name: 'No Hp',
-      selector: (row: any) => row.hp,
-      sortable: true,
-    },
-    {
-      name: 'Status',
-      selector: (row: any) => row.jenis,
       sortable: true,
     },
     {
       name: 'Action',
       cell: (row: any) => (
         <div className="d-flex">
-          <Update reload={reload} user={row} />
-          <Delete reload={reload} userId={row.id} userFoto={row.foto} />
+          <Update reload={reload} rute={row} />
+          <Delete reload={reload} ruteId={row.id} />
         </div>
       ),
       width: '150px'
@@ -77,7 +66,7 @@ const Karyawan = () => {
         <div className="col-md-12 grid-margin stretch-card">
           <div className="card">
             <div className="card-header">
-              <h1 className="card-title">Data Karyawan</h1>
+              <h1 className="card-title">Data Rute</h1>
             </div>
             <div className="card-body">
               <div className="row mb-3">
@@ -126,4 +115,4 @@ const Karyawan = () => {
   )
 }
 
-export default Karyawan
+export default Rute

@@ -6,7 +6,7 @@ import Update from './action/Update';
 import Delete from './action/Delete';
 
 
-const SuperUser = () => {
+const Mobil = () => {
   const [datamobil, setDatamobil] = useState([])
   const [filterText, setFilterText] = React.useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -126,4 +126,4 @@ const SuperUser = () => {
   )
 }
 
-export default SuperUser
+export default Mobil

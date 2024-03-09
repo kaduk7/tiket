@@ -4,13 +4,12 @@ import { useState, SyntheticEvent, useEffect } from "react"
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal';
 import Swal from "sweetalert2"
-import { MobilTb, SesiTb } from "@prisma/client";
+import { RuteTb } from "@prisma/client";
 import { useRouter } from "next/navigation"
-import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
-    const [nama, setNama] = useState(sesi.nama)
-    const [jam, setJam] = useState(sesi.jam)
+function Update({ rute, reload }: { rute: RuteTb, reload: Function }) {
+    const [dari, setDari] = useState("")
+    const [tujuan, setTujuan] = useState("")
     const [show, setShow] = useState(false);
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
@@ -32,20 +31,31 @@ function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
 
     const handleShow = () => setShow(true);
 
+    useEffect(() => {
+        splitData()
+    }, []);
+
+    const splitData = () => {
+        const koordinat = rute.nama.split(' - ');
+        if (koordinat.length === 2) {
+            setDari(koordinat[0]);
+            setTujuan(koordinat[1]);
+        }
+    }
+
     const refreshform = () => {
-        setNama(sesi.nama)
-        setJam(sesi.jam)
+        splitData()
     }
 
     const handleUpdate = async (e: SyntheticEvent) => {
         setIsLoading(true)
         e.preventDefault()
+        const nama = `${dari} - ${tujuan}`;
         try {
             const formData = new FormData()
             formData.append('nama', nama)
-            formData.append('jam', jam)
 
-            const xxx = await axios.patch(`/admin/api/sesi/${sesi.id}`, formData, {
+            const xxx = await axios.patch(`/admin/api/rute/${rute.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -74,40 +84,34 @@ function Update({ sesi, reload }: { sesi: SesiTb, reload: Function }) {
         <div>
             <span onClick={handleShow} className="btn btn-success shadow btn-xs sharp mx-1"><i className="fa fa-edit"></i></span>
             <Modal
-                dialogClassName="modal-m"
+                dialogClassName="modal-lg"
                 show={show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}>
                 <form onSubmit={handleUpdate}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Data Sesi</Modal.Title>
+                        <Modal.Title>Edit Data Rute</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="mb-3 row">
-                            <label className="col-sm-3 col-form-label" >Jadwal</label>
-                            <div className="col-sm-9">
-                                <select
-                                    required
+                            <label className="col-sm-2 col-form-label" >Dari</label>
+                            <div className="col-sm-4">
+                                <input
                                     autoFocus
+                                    required
+                                    type="text"
                                     className="form-control"
-                                    value={nama} onChange={(e) => setNama(e.target.value)}>
-                                    <option value={''}> Pilih Jadwal</option>
-                                    <option value={'Pagi'}> Pagi</option>
-                                    <option value={'Siang'}> Siang</option>
-                                    <option value={'Malam'}> Malam</option>
-                                </select>
+                                    value={dari} onChange={(e) => setDari(e.target.value)}
+                                />
                             </div>
-                        </div>
-                        <div className="mb-3 row">
-                            <label className="col-sm-3 col-form-label" >Jam</label>
-                            <div className="col-sm-9">
+                            <label className="col-sm-2 col-form-label" >Tujuan </label>
+                            <div className="col-sm-4">
                                 <input
                                     required
-                                    type="time"
-                                    id="timeInput"
+                                    type="text"
                                     className="form-control"
-                                    value={jam} onChange={(e) => setJam(e.target.value)}
+                                    value={tujuan} onChange={(e) => setTujuan(e.target.value)}
                                 />
                             </div>
                         </div>

@@ -13,6 +13,7 @@ export const PATCH = async (request: Request, { params }: { params: { id: string
             userId: Number(formData.get('userId')),
             mobilId: Number(formData.get('mobilId')),
             sesiId: Number(formData.get('sesiId')),
+            ruteId: Number(formData.get('ruteId')),
             ongkos: Number(formData.get('ongkos')),
         }
     })
@@ -38,6 +39,7 @@ export const GET = async (request: Request, { params }: { params: { id: string }
             userTb: true,
             mobilTb: true,
             sesiTb: true,
+            ruteTb:true,
         },
         orderBy: {
             sesiTb: {

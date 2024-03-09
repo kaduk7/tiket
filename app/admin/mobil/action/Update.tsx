@@ -125,7 +125,7 @@ function Update({ mobil, reload }: { mobil: MobilTb, reload: Function }) {
                 keyboard={false}>
                 <form onSubmit={handleUpdate}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Data User</Modal.Title>
+                        <Modal.Title>Edit Data Mobil</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                     <div className="row">

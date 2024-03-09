@@ -8,10 +8,11 @@ import { JadwalTb, MobilTb, SesiTb } from "@prisma/client";
 import { useRouter } from "next/navigation"
 import { supabase, supabaseBUCKET } from '@/app/helper'
 
-function Update({ jadwal,reload, tanggal, datauser, datamobil, datasesi }: { jadwal:JadwalTb,reload: Function, tanggal: String, datauser: Array<any>, datamobil: Array<any>, datasesi: Array<any> }) {
+function Update({ jadwal, reload, tanggal, datauser, datamobil, datasesi, datarute }: { jadwal: JadwalTb, reload: Function, tanggal: String, datauser: Array<any>, datamobil: Array<any>, datasesi: Array<any>, datarute: Array<any> }) {
     const [userId, setUserid] = useState(String(jadwal.userId))
     const [mobilId, setMobilid] = useState(String(jadwal.mobilId))
     const [sesiId, setSesiId] = useState(String(jadwal.sesiId))
+    const [ruteId, setRuteId] = useState(String(jadwal.ruteId))
     const [ongkos, setOngkos] = useState(String(jadwal.ongkos))
     const [show, setShow] = useState(false);
     const router = useRouter()
@@ -38,6 +39,7 @@ function Update({ jadwal,reload, tanggal, datauser, datamobil, datasesi }: { jad
         setUserid(String(jadwal.userId))
         setMobilid(String(jadwal.mobilId))
         setSesiId(String(jadwal.sesiId))
+        setRuteId(String(jadwal.ruteId))
         setOngkos(String(jadwal.ongkos))
     }
 
@@ -49,6 +51,7 @@ function Update({ jadwal,reload, tanggal, datauser, datamobil, datasesi }: { jad
             formData.append('userId', userId)
             formData.append('mobilId', mobilId)
             formData.append('sesiId', sesiId)
+            formData.append('ruteId', ruteId)
             formData.append('ongkos', ongkos)
 
             const xxx = await axios.patch(`/admin/api/jadwal/${jadwal.id}`, formData, {
@@ -90,7 +93,34 @@ function Update({ jadwal,reload, tanggal, datauser, datamobil, datasesi }: { jad
                         <Modal.Title>Edit Jadwal</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                    <div className="row">
+                        <div className="row">
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Rute</label>
+                                <select
+                                    required
+                                    autoFocus
+                                    className="form-control"
+                                    value={ruteId} onChange={(e) => setRuteId(e.target.value)}>
+                                    <option value={''}> Pilih Rute</option>
+                                    {datarute?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3 col-md-6">
+                                <label className="form-label" >Pilih Sesi</label>
+                                <select
+                                    required
+                                    className="form-control"
+                                    value={sesiId} onChange={(e) => setSesiId(e.target.value)}>
+                                    <option value={''}> Pilih Sesi</option>
+                                    {datasesi?.map((item: any, i) => (
+                                        <option key={i} value={item.id} >{item.nama}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="row">
                             <div className="mb-3 col-md-6">
                                 <label className="form-label" >Nama Sopir</label>
                                 <select
@@ -118,18 +148,6 @@ function Update({ jadwal,reload, tanggal, datauser, datamobil, datasesi }: { jad
                             </div>
                         </div>
                         <div className="row">
-                            <div className="mb-3 col-md-6">
-                                <label className="form-label" >Pilih Sesi</label>
-                                <select
-                                    required
-                                    className="form-control"
-                                    value={sesiId} onChange={(e) => setSesiId(e.target.value)}>
-                                    <option value={''}> Pilih Sesi</option>
-                                    {datasesi?.map((item: any, i) => (
-                                        <option key={i} value={item.id} >{item.nama}</option>
-                                    ))}
-                                </select>
-                            </div>
                             <div className="mb-3 col-md-6">
                                 <label className="form-label" >Ongkos</label>
                                 <input

@@ -36,11 +36,21 @@ model SesiTb {
   jadwalTb JadwalTb[]
 }
 
+model RuteTb {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jadwalTb JadwalTb[]
+}
+
 model JadwalTb {
   id               Int      @id @default(autoincrement())
   userId           Int
   mobilId          Int
   sesiId           Int
+  ruteId           Int
   tanggalBerangkat DateTime
   ongkos           Int
   createdAt        DateTime @default(now())
@@ -49,6 +59,7 @@ model JadwalTb {
   userTb  UserTb  @relation(fields: [userId], references: [id], onDelete: Cascade)
   mobilTb MobilTb @relation(fields: [mobilId], references: [id], onDelete: Cascade)
   sesiTb  SesiTb  @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  ruteTb  RuteTb  @relation(fields: [ruteId], references: [id], onDelete: Cascade)
 }
 
 model UserTb {
